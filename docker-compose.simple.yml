@@ -18,7 +18,7 @@ services:
       - ./db/backup:/backup
       - ./db/backupscripts:/backupscripts
       - /etc/localtime:/etc/localtime:ro
-    
+
   apache:
     build: ./webserver
     hostname: gibbon-apache
@@ -28,14 +28,14 @@ services:
     environment:
       - GIBBON_SITENAME
       - SERVER_ADMIN_MAIL
-    ports:
-      - 80:80
+    expose:
+      - 80
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - gibbon-root:${GIBBON_BASEDIR}
 
   php:
-    build: 
+    build:
       context: ./php
       dockerfile: Dockerfile
       target: dev

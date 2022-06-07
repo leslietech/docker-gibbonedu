@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: mariadb
-    hostname: mariadb
+    hostname: mariadb-${GIBBON_SITENAME}
     restart: always
     environment:
       - LANG
@@ -19,12 +19,11 @@ services:
       - ./db/backupscripts:/backupscripts
       - /etc/localtime:/etc/localtime:ro
     networks:
-      - default
-      - backup
-    
+      - proxy
+
   apache:
     build: ./webserver
-    hostname: gibbon-apache
+    hostname: apache-${GIBBON_SITENAME}
     restart: always
     depends_on:
       - php
@@ -37,16 +36,30 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - gibbon-root:${GIBBON_BASEDIR}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${GIBBON_SITE_NAME}.rule=Host(`${GIBBON_SITEURL}`, `${GIBBON_WWW_URL}`)
+      - traefik.http.routers.${GIBBON_SITE_NAME}.entrypoints=web
+      - traefik.http.routers.${GIBBON_SITE_NAME}.middlewares=redirect-to-https@docker
+      - "traefik.http.routers.${GIBBON_SITE_NAME}.entrypoints=http"
+      - "traefik.http.middlewares.${GIBBON_SITE_NAME}-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.${GIBBON_SITE_NAME}.middlewares=${GIBBON_SITE_NAME}-https-redirect"
+      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.entrypoints=https"
+      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.rule=Host(`${GIBBON_SITEURL}`)"
+      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.tls=true"
+      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.service=${GIBBON_SITE_NAME}"
+      - "traefik.http.services.${GIBBON_SITE_NAME}.loadbalancer.server.port=80"
+      - "traefik.docker.network=proxy"
+
     networks:
-      - default
-      - webfront
+      - proxy
 
   php:
-    build: 
+    build:
       context: ./php
       dockerfile: Dockerfile
       target: dev
-    hostname: gibbon-php
+    hostname: php-${GIBBON_SITENAME}
     restart: always
     environment:
       - GIBBON_SITENAME
@@ -60,7 +73,7 @@ services:
     volumes:
       - gibbon-root:${GIBBON_BASEDIR}
     networks:
-      - default
+      - proxy
 
   crontab:
     image: willfarrell/crontab
@@ -89,17 +102,13 @@ services:
       - SMARTHOST_PASSWORD
       - SMARTHOST_ALIASES
     networks:
-      - default
+      - proxy
 
 volumes:
   gibbon-db-data:
   gibbon-db-log:
   gibbon-root:
 
-networks:
-  webfront:
+  proxy:
     external:
-      name: webfront
-  backup:
-    external:
-      name: backup
+      name: proxy
