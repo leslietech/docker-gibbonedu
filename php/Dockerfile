@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine as minimum
+FROM php:8.1-fpm-alpine as minimum
 
 # necessary if pecl has to be used later
 ENV LIBRARY_PATH=/lib:/usr/lib
@@ -15,6 +15,10 @@ COPY ./docker-php-mailrelay.ini "$PHP_INI_DIR/conf.d/docker-php-mailrelay.ini"
 RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 FROM minimum as dev
+
+RUN apk add git openssh-client patch rsync \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && su -s /bin/sh -c "mkdir ~/.ssh && chmod 0700 ~/.ssh && mkdir ~/salt && mkdir ~/templates && mkdir -p /var/www/html/web/sites" www-data
 
 COPY ./docker-php-gibbonsetup /usr/local/bin/
 
