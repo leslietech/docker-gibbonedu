@@ -19,7 +19,7 @@ services:
       - ./db/backupscripts:/backupscripts
       - /etc/localtime:/etc/localtime:ro
     networks:
-      - ${GIBBON_NETWORK}
+      - ${GIBBON_SITENAME}_network
 
   apache:
     build: ./webserver
@@ -52,7 +52,7 @@ services:
       - "traefik.docker.network=proxy"
     networks:
       - proxy
-      - ${GIBBON_NETWORK}
+      - ${GIBBON_SITENAME}_network
 
   php:
     build:
@@ -73,7 +73,7 @@ services:
     volumes:
       - gibbon-root:${GIBBON_BASEDIR}
     networks:
-      - ${GIBBON_NETWORK}
+      - ${GIBBON_SITENAME}_network
 
   crontab:
     image: willfarrell/crontab
@@ -102,7 +102,7 @@ services:
       - SMARTHOST_PASSWORD
       - SMARTHOST_ALIASES
     networks:
-      - ${GIBBON_NETWORK}
+      - ${GIBBON_SITENAME}_network
 
 volumes:
   gibbon-db-data:
@@ -112,6 +112,8 @@ volumes:
   proxy:
     external:
       name: proxy
+  
+  # Modify the network name below
   gibbon##sitename_network:
     external:
       name: [###Network Placeholder###]
