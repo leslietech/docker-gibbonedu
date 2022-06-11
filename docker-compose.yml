@@ -37,10 +37,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - gibbon-root:${GIBBON_BASEDIR}
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.${GIBBON_SITE_NAME}.rule=Host(`${GIBBON_SITEURL}`, `${GIBBON_WWW_URL}`)
-      - traefik.http.routers.${GIBBON_SITE_NAME}.entrypoints=web
-      - traefik.http.routers.${GIBBON_SITE_NAME}.middlewares=redirect-to-https@docker
+      - "traefik.enable=true"
+      - "traefik.http.routers.${GIBBON_SITE_NAME}.rule=Host(`${GIBBON_SITEURL}`, `${GIBBON_WWW_URL}`)""
+      - "traefik.http.routers.${GIBBON_SITE_NAME}.entrypoints=web"
+      - "traefik.http.routers.${GIBBON_SITE_NAME}.middlewares=redirect-to-https@docker"
       - "traefik.http.routers.${GIBBON_SITE_NAME}.entrypoints=http"
       - "traefik.http.middlewares.${GIBBON_SITE_NAME}-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.${GIBBON_SITE_NAME}.middlewares=${GIBBON_SITE_NAME}-https-redirect"
