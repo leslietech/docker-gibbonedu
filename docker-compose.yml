@@ -38,17 +38,17 @@ services:
       - gibbon-root:${GIBBON_BASEDIR}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}.rule=Host(`${GIBBON_SITEURL}`, `${GIBBON_WWW_URL}`)""
-      - "traefik.http.routers.${GIBBON_SITE_NAME}.entrypoints=web"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}.middlewares=redirect-to-https@docker"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}.entrypoints=http"
-      - "traefik.http.middlewares.${GIBBON_SITE_NAME}-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}.middlewares=${GIBBON_SITE_NAME}-https-redirect"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.entrypoints=https"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.rule=Host(`${GIBBON_SITEURL}`)"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.tls=true"
-      - "traefik.http.routers.${GIBBON_SITE_NAME}-secure.service=${GIBBON_SITE_NAME}"
-      - "traefik.http.services.${GIBBON_SITE_NAME}.loadbalancer.server.port=80"
+      - "traefik.http.routers.${GIBBON_SITENAME}.rule=Host(`${GIBBON_SITEURL}`, `${GIBBON_WWW_URL}`)"
+      - "traefik.http.routers.${GIBBON_SITENAME}.entrypoints=web"
+      - "traefik.http.routers.${GIBBON_SITENAME}.middlewares=redirect-to-https@docker"
+      - "traefik.http.routers.${GIBBON_SITENAME}.entrypoints=http"
+      - "traefik.http.middlewares.${GIBBON_SITENAME}-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.${GIBBON_SITENAME}.middlewares=${GIBBON_SITENAME}-https-redirect"
+      - "traefik.http.routers.${GIBBON_SITENAME}-secure.entrypoints=https"
+      - "traefik.http.routers.${GIBBON_SITENAME}-secure.rule=Host(`${GIBBON_SITEURL}`)"
+      - "traefik.http.routers.${GIBBON_SITENAME}-secure.tls=true"
+      - "traefik.http.routers.${GIBBON_SITENAME}-secure.service=${GIBBON_SITENAME}"
+      - "traefik.http.services.${GIBBON_SITENAME}.loadbalancer.server.port=80"
       - "traefik.docker.network=proxy"
     networks:
       - proxy
@@ -109,6 +109,7 @@ volumes:
   gibbon-db-log:
   gibbon-root:
 
+networks:
   proxy:
     external:
       name: proxy
