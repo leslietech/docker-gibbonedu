@@ -19,7 +19,7 @@ services:
       - ./db/backupscripts:/backupscripts
       - /etc/localtime:/etc/localtime:ro
     networks:
-      - ${GIBBON_SITENAME}_network
+      - ${GIBBON_SITENAME}
 
   apache:
     build: ./webserver
@@ -52,7 +52,7 @@ services:
       - "traefik.docker.network=proxy"
     networks:
       - proxy
-      - ${GIBBON_SITENAME}_network
+      - ${GIBBON_SITENAME}
 
   php:
     build:
@@ -73,7 +73,7 @@ services:
     volumes:
       - gibbon-root:${GIBBON_BASEDIR}
     networks:
-      - ${GIBBON_SITENAME}_network
+      - ${GIBBON_SITENAME}
 
   crontab:
     image: willfarrell/crontab
@@ -102,7 +102,7 @@ services:
       - SMARTHOST_PASSWORD
       - SMARTHOST_ALIASES
     networks:
-      - ${GIBBON_SITENAME}_network
+      - ${GIBBON_SITENAME}
 
 volumes:
   gibbon-db-data:
@@ -115,13 +115,12 @@ networks:
     external:
       name: proxy
 
-  # The containers above use a custom private network '${GIBBON_SITENAME}_network'.
+  gibbon:
+    external:
+      name: gibbon
+  # The containers above use a custom private network '${GIBBON_SITENAME}'.
   # The variable GIBBON_SITENAME is defined in the .env file.
   # 1. Update the .env file as per your preferences (please choose secure passwords and usernames)
   # 2. If you named GIBBON_SITENAME as 'mygibbon', then create a new network using the following example (where 'mygibbon is replaced by the name that you chose):
-  #    docker network create mygibbon_network
-  # 2. Replace the text 'gibbon_network' in the line below, and the last line below with the network name that you chose, e.g. mygibbon_network
-
-  gibbon_network:
-    external:
-      name: gibbon_network
+  #    docker network create mygibbon
+  # 2. Replace the text 'gibbon' in the line below, and the last line below with the network name that you chose, e.g. mygibbon
